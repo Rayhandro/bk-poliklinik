@@ -35,14 +35,17 @@ Route::group(['middleware' => 'auth', 'as' => 'backoffice.', 'prefix' => 'backof
     Route::put('poli/{id}', ['as' => 'poli.update', 'uses' => 'App\Http\Controllers\PoliController@update']);
     Route::delete('poli/{id}', ['as' => 'poli.destroy', 'uses' => 'App\Http\Controllers\PoliController@destroy']);
 
-    // Dokter
+        // Dokter
     Route::get('dokter', ['as' => 'dokter.index', 'uses' => 'App\Http\Controllers\DokterController@index']);
     Route::post('dokter/data', ['as' => 'dokter.data', 'uses' => 'App\Http\Controllers\DokterController@data']);
     Route::post('dokter', ['as' => 'dokter.store', 'uses' => 'App\Http\Controllers\DokterController@store']);
     Route::put('dokter/{id}', ['as' => 'dokter.update', 'uses' => 'App\Http\Controllers\DokterController@update']);
     Route::delete('dokter/{id}', ['as' => 'dokter.destroy', 'uses' => 'App\Http\Controllers\DokterController@destroy']);
+
+    // Profil Dokter (untuk pengguna yang login)
     Route::get('dokter/edit', ['as' => 'dokter.edit', 'uses' => 'App\Http\Controllers\DokterController@edit']);
-    Route::post('dokter/update-profil', ['as' => 'dokter.updateProfil', 'uses' => 'App\Http\Controllers\DokterController@updateProfil']);
+    Route::put('dokter/update-profil', ['as' => 'dokter.updateProfil', 'uses' => 'App\Http\Controllers\DokterController@updateProfil']);
+
 
     // Jadwal Periksa
     Route::get('jadwal_periksa', ['as' => 'jadwal_periksa.index', 'uses' => 'App\Http\Controllers\JadwalPeriksaController@index']);

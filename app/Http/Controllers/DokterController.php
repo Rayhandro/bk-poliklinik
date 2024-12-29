@@ -105,16 +105,40 @@ class DokterController extends Controller
     }
 
     public function updateProfil(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . auth()->id(),
-            'phone' => 'nullable|string|max:15',
-        ]);
+{
+    // Validasi input tanpa required untuk mendukung update parsial
+    $request->validate([
+        'name' => 'nullable|string|max:255',
+        'phone' => 'nullable|string|max:15', // Nomor telepon opsional, dibatasi maksimal 15 karakter
+        'alamat' => 'nullable|string|max:255' // Alamat opsional untuk digunakan sebagai password jika ada
+    ]);
 
-        $dokter = auth()->user();
-        $dokter->update($request->only('name', 'email', 'phone'));
+    // Ambil data user yang sedang login
+    $dokter = auth()->user(); // Ambil dokter terkait pengguna login
 
-        return redirect()->route('backoffice.dokter.edit')->with('success', 'Profil berhasil diperbarui.');
+    // Update data dokter jika ada input yang diberikan
+    if ($request->has('name')) {
+        $dokter->dokter->update(['nama' => $request->name]); // Sinkronisasi nama dengan data dokter
     }
+
+    if ($request->has('alamat')) {
+        $dokter->dokter->update(['alamat' => $request->alamat]); // Update alamat di data dokter
+    }
+
+    // Update atribut user berdasarkan input yang diberikan
+    $updateData = $request->only('name', 'phone');
+
+    if ($request->has('alamat')) {
+        $updateData['password'] = bcrypt($request->alamat); // Gunakan alamat sebagai password jika ada
+    }
+
+    // Perbarui data user di database jika ada perubahan
+    if (!empty($updateData)) {
+        $dokter->update($updateData);
+    }
+
+    // Redirect kembali dengan pesan sukses
+    return redirect()->route('backoffice.dokter.edit')->with('success', 'Profil berhasil diperbarui.');
 }
+
+}    
